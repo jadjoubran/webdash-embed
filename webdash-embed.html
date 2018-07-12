@@ -1,0 +1,58 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/empty-state-webdash/empty-state-webdash.html">
+
+<dom-module id="webdash-embed">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      #embed {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+
+
+    <div id="embed"></div>
+
+
+    <template is="dom-if" if="{{emptyState}}">
+      <empty-state-webdash title="No embed code found">
+        Add an embed code in
+        <strong>"embed"</strong> key in your webdash.json
+      </empty-state-webdash>
+    </template>
+
+
+  </template>
+
+  <script>
+    class WebdashEmbed extends Polymer.Element {
+      static get is() { return 'webdash-embed'; }
+
+      ready() {
+        super.ready();
+        this.backend = new Backend(WebdashEmbed.is);
+        this.run();
+      }
+
+      run() {
+        const config = window.webdashConfig;
+        if (config && config.embed) {
+          this.embed(config.embed);
+        } else {
+          this.emptyState = true;
+        }
+      }
+
+      embed(code) {
+        this.$.embed.innerHTML = code;
+      }
+    }
+
+    window.customElements.define(WebdashEmbed.is, WebdashEmbed);
+  </script>
+</dom-module>
